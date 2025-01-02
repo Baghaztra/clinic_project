@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
         Uri.parse(appointmentUrl),
         headers: {
           'Authorization':
-              'Bearer 5|f1JW0NzUeaE4HtlNDDPEPxceolmIV5ps5h0doF2g552ae622',
+              'Bearer ${AppConfig.token}',
         },
       );
       if (response.statusCode == 200) {
@@ -134,14 +134,14 @@ class _HomePageState extends State<HomePage> {
                         itemCount: appointments.length,
                         itemBuilder: (context, index) {
                           return Card(
-                              color: AppConfig.secondaryColor,
+                              color: Colors.green.shade50,
                               margin: const EdgeInsets.all(5),
                               child: ListTile(
                                 title: Text(
-                                  "${appointments[index]["id"]}",
+                                  "${appointments[index]["doctor"]}",
                                   style: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.blue.shade900,
+                                      color: Colors.green.shade900,
                                       fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.justify,
                                 ),
@@ -151,6 +151,16 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 10),
+                                      child: Text(
+                                        "${appointments[index][""]}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.black,
+                                            fontSize: 13),
+                                      ),
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 10),
                                       child: Text(
