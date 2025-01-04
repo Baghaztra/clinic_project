@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   List appointments = [];
 
   Future<void> getAppointment() async {
-    String appointmentUrl = "${AppConfig.backendUrl}/appointments";
+    String appointmentUrl = "${AppConfig.backendUrl}/appointment/latest";
     try {
       var response = await http.get(
         Uri.parse(appointmentUrl),
@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 10),
                                       child: Text(
-                                        "${appointments[index][""]}",
+                                        "Doketer ${appointments[index]["specialization"]}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.normal,
                                             color: Colors.black,

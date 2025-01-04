@@ -130,6 +130,16 @@ class _HistoryPageState extends State<HistoryPage> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 5),
                                   child: Text(
+                                    "Keluhan: ${appointments[index]["complaints"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
+                                        fontSize: 13),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
                                     "Status ${appointments[index]["status"]}",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.normal,
