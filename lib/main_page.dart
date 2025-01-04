@@ -2,6 +2,7 @@ import 'package:clinic_project/diagnosis_page.dart';
 import 'package:clinic_project/doctors_page.dart';
 import 'package:clinic_project/history_page.dart';
 import 'package:clinic_project/home_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -24,33 +25,42 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex], // Tampilkan halaman berdasarkan indeks
+      body: _pages[_currentIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: (() {}),
+        splashColor: Colors.green.shade500,
+        backgroundColor: Colors.green.shade700,
+        child: const Icon(
+          CupertinoIcons.add,
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.green.shade600,
         unselectedItemColor: Colors.grey,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
-            _currentIndex = index; // Update indeks saat menu ditekan
+            _currentIndex = index;
           });
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(CupertinoIcons.house_fill),
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.local_hospital),
+            icon: Icon(CupertinoIcons.rectangle_stack_person_crop_fill),
             label: "Dokter",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.history),
+            icon: Icon(CupertinoIcons.timer_fill),
             label: "Riwayat",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.health_and_safety),
+            icon: Icon(CupertinoIcons.lab_flask_solid),
             label: "Diagnosis",
           ),
+
         ],
       ),
     );

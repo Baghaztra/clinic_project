@@ -6,6 +6,8 @@ class AppConfig {
   
   static const String backendUrl = "http://10.0.2.2:8000/api";
   static String? token;
+  static String? username;
+  static String? role;
 
   static void saveToken(String newToken) {
     token = newToken;

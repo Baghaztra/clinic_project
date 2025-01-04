@@ -31,14 +31,15 @@ class _HomePageState extends State<HomePage> {
           appointments = jsonDecode(response.body);
         });
       } else {
-        if (kDebugMode) {
-          print("Failed to laod products, error code: ${response.statusCode}");
-        }
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erroe, status: ${response.statusCode}")),
+        );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error fetching data")),
+      );
     }
   }
 
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Text(
-                  "User3198!",
+                  "${AppConfig.username}",
                   style: TextStyle(
                     color: AppConfig.primaryColor,
                     fontWeight: FontWeight.normal,
@@ -122,7 +123,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: SizedBox(
-                height: 250,
+                height: 500,
                 child: appointments.isEmpty
                     ? const Center(
                         child: Text(

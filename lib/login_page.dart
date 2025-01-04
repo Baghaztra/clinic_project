@@ -1,6 +1,6 @@
 import 'package:clinic_project/config.dart';
 import 'package:clinic_project/main_page.dart';
-import 'package:clinic_project/secure_storage_service.dart';
+// import 'package:clinic_project/secure_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -46,9 +46,10 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final String token = data['access_token'];
 
-        AppConfig.saveToken(token);
+        AppConfig.saveToken(data['access_token']);
+        AppConfig.username = data['name'];
+        AppConfig.role = data['role'];
 
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
