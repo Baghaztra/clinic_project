@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:clinic_project/config.dart';
+import 'package:clinic_project/login_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -22,8 +23,7 @@ class _HomePageState extends State<HomePage> {
       var response = await http.get(
         Uri.parse(appointmentUrl),
         headers: {
-          'Authorization':
-              'Bearer ${AppConfig.token}',
+          'Authorization': 'Bearer ${AppConfig.token}',
         },
       );
       if (response.statusCode == 200) {
@@ -39,6 +39,33 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Error fetching data")),
+      );
+    }
+  }
+
+  Future<void> logout() async {
+    const String apiUrl = "${AppConfig.backendUrl}/logout";
+
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer ${AppConfig.token}',
+        },
+      );
+      if (response.statusCode == 200) {
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => const LoginPage()));
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erroe, status: ${response.statusCode}")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error fetching logout")),
       );
     }
   }
@@ -60,127 +87,167 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start, 
-          children: <Widget> [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(children: <Widget>[
-                const Text(
-                  "Hi ",
+        child: Column(children: <Widget>[
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(children: <Widget>[
+              const Text(
+                "Hi ",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                "${AppConfig.username}",
+                style: TextStyle(
+                  color: AppConfig.primaryColor,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  logout();
+                },
+              ),
+            ]),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Column(children: [
+              Text(
+                dayName,
+                style: TextStyle(
+                    color: Colors.blue.shade600,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                date,
+                style: TextStyle(
+                  color: Colors.green.shade800,
+                ),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+            ]),
+          ),
+          Row(
+            children: const [
+              Padding(
+                padding: EdgeInsets.only(left: 15),
+                child: Text(
+                  "Janji temu",
                   style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.normal,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  "${AppConfig.username}",
-                  style: TextStyle(
-                    color: AppConfig.primaryColor,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ]),
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: Column(children: [
-                Text(
-                  dayName,
-                  style: TextStyle(
-                      color: Colors.blue.shade600,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  date,
-                  style: TextStyle(
-                    color: Colors.green.shade800,
-                  ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-              ]),
-            ),
-            Row(
-              children: const [
-                Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Text(
-                    "Janji temu",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SizedBox(
-                height: 500,
-                child: appointments.isEmpty
-                    ? const Center(
-                        child: Text(
-                          "No appointments available",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: appointments.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                              color: Colors.green.shade50,
-                              margin: const EdgeInsets.all(5),
-                              child: ListTile(
-                                title: Text(
-                                  "${appointments[index]["doctor"]}",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.green.shade900,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.justify,
-                                ),
-                                subtitle: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
-                                      child: Text(
-                                        "Doketer ${appointments[index]["specialization"]}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            color: Colors.black,
-                                            fontSize: 13),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
-                                      child: Text(
-                                        appointments[index]["appointment_date"],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            color: Colors.black,
-                                            fontSize: 13),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ));
-                        },
-                      ),
               ),
-            )
-          ]
-        ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: appointments.isEmpty
+                ? const Center(
+                    child: Text(
+                      "No appointments available",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: appointments.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                          color: Colors.green.shade50,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: ListTile(
+                            title: Text(
+                              "${appointments[index]["doctor"]}",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.green.shade900,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.justify,
+                            ),
+                            subtitle: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    "Doketer ${appointments[index]["specialization"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
+                                        fontSize: 13),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    appointments[index]["status"],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: appointments[index]["status"] ==
+                                                'canceled'
+                                            ? Colors.red
+                                            : (appointments[index]["status"] ==
+                                                    'confirmed'
+                                                ? Colors.green.shade900
+                                                : Colors.amber.shade800),
+                                        fontSize: 13),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
+                                        .format(DateTime.parse(
+                                            appointments[index]
+                                                ["appointment_date"]))
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
+                                        fontSize: 13),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            trailing: (AppConfig.role == 'doctor' &&
+                                    appointments[index]["status"] == 'pending')
+                                ? Column(
+                                    children: const [
+                                      Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                      ),
+                                      Spacer(),
+                                      Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )
+                                    ],
+                                  )
+                                : const Text(''),
+                          ));
+                    },
+                  ),
+          ),
+        ]),
       ),
     );
   }

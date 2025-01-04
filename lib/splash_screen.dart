@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:clinic_project/main_page.dart';
 
-import 'config.dart';
+import 'package:clinic_project/login_page.dart';
+import 'package:clinic_project/main_page.dart';
+import 'package:clinic_project/config.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,9 +16,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    var isLogin = AppConfig.token != null;
     Timer(
       const Duration(seconds: 3),
-      () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context)=>const MainPage()))
+      () => Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return isLogin ? const MainPage() : const LoginPage();
+          }
+        )
+      )
     );
   }
 

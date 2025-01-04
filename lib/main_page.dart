@@ -1,3 +1,4 @@
+import 'package:clinic_project/config.dart';
 import 'package:clinic_project/create_appointment.dart';
 import 'package:clinic_project/diagnosis_page.dart';
 import 'package:clinic_project/doctors_page.dart';
@@ -27,7 +28,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: AppConfig.role == 'patient' ? FloatingActionButton(
         onPressed: (() {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -39,7 +40,7 @@ class _MainPageState extends State<MainPage> {
         child: const Icon(
           CupertinoIcons.add,
         ),
-      ),
+      ) : null,
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.green.shade600,
         unselectedItemColor: Colors.grey,
@@ -66,7 +67,6 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(CupertinoIcons.lab_flask_solid),
             label: "Diagnosis",
           ),
-
         ],
       ),
     );

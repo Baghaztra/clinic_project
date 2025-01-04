@@ -1,6 +1,6 @@
 import 'package:clinic_project/config.dart';
 import 'package:clinic_project/main_page.dart';
-// import 'package:clinic_project/secure_storage_service.dart';
+import 'package:clinic_project/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -56,9 +56,10 @@ class _LoginPageState extends State<LoginPage> {
           const SnackBar(content: Text("Login berhasil!")),
         );
 
-         // ignore: use_build_context_synchronously
-         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const MainPage()));
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const MainPage()),
+        );
       } else {
         final error = json.decode(response.body);
         // ignore: use_build_context_synchronously
@@ -70,9 +71,13 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Terjadi kesalahan: $e")),
-      );
+
+      if (e is http.Response) {
+        final error = json.decode(e.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error['message'] ?? "Terjadi kesalahan pada server.")),
+        );
+      }
     }
   }
 
@@ -87,37 +92,61 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Login")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _email,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.emailAddress,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "LogIn",
+            style: TextStyle(
+              color: AppConfig.primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 38
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _password,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _login,
-                    child: const Text("Login"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              height: 300,
+              child: ListView(
+                children: [
+                  TextField(
+                    controller: _email,
+                    decoration: const InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
                   ),
-          ],
-        ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _password,
+                    decoration: const InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(),
+                    ),
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _login,
+                    child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white,)
+                      : const Text("Login"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const RegisterPage())
+                      );
+                    } ,
+                    child: const Text("Register"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

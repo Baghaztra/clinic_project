@@ -1,7 +1,6 @@
-import 'package:clinic_project/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-// import 'package:clinic_project/splash_screen.dart';
+import 'package:clinic_project/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.green,
             ),
-            home: const LoginPage(),
+            home: const SplashScreen(),
           );
         }
         return const MaterialApp(
