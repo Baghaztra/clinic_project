@@ -1,3 +1,4 @@
+import 'package:clinic_project/create_appointment.dart';
 import 'package:clinic_project/diagnosis_page.dart';
 import 'package:clinic_project/doctors_page.dart';
 import 'package:clinic_project/history_page.dart';
@@ -27,7 +28,12 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: _pages[_currentIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: (() {}),
+        onPressed: (() {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context)=>const CreateAppointment())
+          );
+        }),
         splashColor: Colors.green.shade500,
         backgroundColor: Colors.green.shade700,
         child: const Icon(

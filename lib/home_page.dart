@@ -89,14 +89,14 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   dayName,
                   style: TextStyle(
-                      color: AppConfig.primaryColor,
+                      color: Colors.blue.shade600,
                       fontSize: 40,
                       fontWeight: FontWeight.bold),
                 ),
                 Text(
                   date,
                   style: TextStyle(
-                    color: AppConfig.secondaryColor,
+                    color: Colors.green.shade800,
                   ),
                 ),
                 const SizedBox(
