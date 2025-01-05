@@ -71,11 +71,11 @@ class _CreateAppointmentState extends State<CreateAppointment> {
       isLoading = true;
     });
 
-    String urlAllProduct = "${AppConfig.backendUrl}/doctors?search=$date";
+    String apiUrl = "${AppConfig.backendUrl}/doctors?search=$date";
     try {
       _doctors = [];
       var response = await http.get(
-        Uri.parse(urlAllProduct),
+        Uri.parse(apiUrl),
         headers: {
           'Authorization': 'Bearer ${AppConfig.token}',
         },

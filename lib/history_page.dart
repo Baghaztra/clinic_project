@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:clinic_project/config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -94,7 +95,10 @@ class _HistoryPageState extends State<HistoryPage> {
                           margin: const EdgeInsets.only(bottom: 10),
                           child: ListTile(
                             title: Text(
-                              appointments[index]["appointment_date"],
+                              DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
+                                .format(DateTime.parse(
+                                    appointments[index]["appointment_date"]))
+                                .toString(),
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.green.shade900,

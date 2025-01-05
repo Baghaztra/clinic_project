@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:clinic_project/config.dart';
+import 'package:clinic_project/create_medical_record.dart';
 import 'package:clinic_project/login_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +34,45 @@ class _HomePageState extends State<HomePage> {
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Erroe, status: ${response.statusCode}")),
+          SnackBar(content: Text("Erroe: ${response.statusCode}")),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Error fetching data")),
+      );
+    }
+  }
+
+  Future<void> action(String action, String id) async {
+    String apiUrl = "${AppConfig.backendUrl}/appointments/$id";
+    try {
+      var response = await http.patch(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer ${AppConfig.token}',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "status": action
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Appointment $action")),
+        );
+        getAppointment();
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${response.statusCode}")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error")),
       );
     }
   }
@@ -173,7 +207,9 @@ class _HomePageState extends State<HomePage> {
                           margin: const EdgeInsets.only(bottom: 10),
                           child: ListTile(
                             title: Text(
-                              "${appointments[index]["doctor"]}",
+                              AppConfig.role == 'doctor' ?
+                                "${appointments[index]["patient"]}" :
+                                "${appointments[index]["doctor"]}",
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.green.shade900,
@@ -188,7 +224,9 @@ class _HomePageState extends State<HomePage> {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Text(
-                                    "Doketer ${appointments[index]["specialization"]}",
+                                    AppConfig.role == 'doctor' ?
+                                      "${appointments[index]["complaints"]}":
+                                      "Doketer ${appointments[index]["specialization"]}",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black,
@@ -216,8 +254,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                     DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
                                         .format(DateTime.parse(
-                                            appointments[index]
-                                                ["appointment_date"]))
+                                            appointments[index]["appointment_date"]))
                                         .toString(),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.normal,
@@ -227,22 +264,43 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            trailing: (AppConfig.role == 'doctor' &&
-                                    appointments[index]["status"] == 'pending')
-                                ? Column(
-                                    children: const [
-                                      Icon(
+                            trailing: AppConfig.role == 'doctor' 
+                              ? Column(
+                                children: [
+                                  appointments[index]["status"] == 'confirmed'
+                                    ? InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return CreateMedicalRecords(appointments[index]["id"]);
+                                            }
+                                          )
+                                        );
+                                      },
+                                      child: const Icon(
+                                        Icons.file_present_rounded,
+                                        color: Colors.green,
+                                      ),
+                                    )
+                                    : InkWell(
+                                      onTap: () => action('confirmed',appointments[index]["id"].toString()),
+                                      child: const Icon(
                                         Icons.check_circle,
                                         color: Colors.green,
                                       ),
-                                      Spacer(),
-                                      Icon(
-                                        Icons.remove_circle,
-                                        color: Colors.red,
-                                      )
-                                    ],
-                                  )
-                                : const Text(''),
+                                    ),
+                                  const Spacer(),
+                                  InkWell(
+                                    onTap: () => action('canceled',appointments[index]["id"].toString()),
+                                    child: const Icon(
+                                      Icons.remove_circle,
+                                      color: Colors.red,
+                                    )
+                                  ),
+                                ],
+                              )
+                              : const Text(''),
                           ));
                     },
                   ),

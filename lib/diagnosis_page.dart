@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:clinic_project/config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class DiagnosisPage extends StatefulWidget {
   const DiagnosisPage({super.key});
@@ -93,7 +94,10 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           margin: const EdgeInsets.only(bottom: 10),
                           child: ListTile(
                             title: Text(
-                              diagnosis[index]["date"],
+                              DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
+                                .format(DateTime.parse(
+                                    diagnosis[index]["date"]))
+                                .toString(),
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.green.shade900,
