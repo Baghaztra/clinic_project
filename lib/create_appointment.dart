@@ -45,18 +45,13 @@ class _CreateAppointmentState extends State<CreateAppointment> {
         }),
       );
 
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('si pembuat: ${AppConfig.token}')),
-      );
-
       var responseData = jsonDecode(response.body);
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(responseData['message'])),
       );
       // ignore: use_build_context_synchronously
-      Navigator.of(context).push(MaterialPageRoute(
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (BuildContext context) => const MainPage())
       );
     } catch (e) {
@@ -190,7 +185,7 @@ class _CreateAppointmentState extends State<CreateAppointment> {
                         items: _doctors.map((doctor) {
                           return DropdownMenuItem<String>(
                             value: doctor['id'].toString(),
-                            child: Text(doctor['name']),
+                            child: Text("${doctor['name']} (${doctor['specialization']})"),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {

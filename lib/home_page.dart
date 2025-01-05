@@ -120,28 +120,30 @@ class _HomePageState extends State<HomePage> {
     final String date = DateFormat('d MMMM yyyy', 'id_ID').format(now);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(children: <Widget>[
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(children: <Widget>[
-              const Text(
-                "Hi ",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                ),
+      appBar: AppBar(
+        backgroundColor: AppConfig.colorD,
+        title: Row(
+          children: [
+            const Text(
+              "Hi ",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.normal,
               ),
-              Text(
-                "${AppConfig.username}",
-                style: TextStyle(
-                  color: AppConfig.primaryColor,
-                  fontWeight: FontWeight.normal,
-                ),
+            ),
+            Text(
+              "${AppConfig.username}",
+              style: TextStyle(
+                fontSize: 16,
+                color: AppConfig.colorA,
+                fontWeight: FontWeight.normal,
               ),
-              const Spacer(),
-              IconButton(
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
                 icon: const Icon(
                   Icons.logout,
                   color: Colors.red,
@@ -150,33 +152,61 @@ class _HomePageState extends State<HomePage> {
                   logout();
                 },
               ),
-            ]),
-          ),
-          const SizedBox(height: 20),
-          Center(
-            child: Column(children: [
-              Text(
-                dayName,
-                style: TextStyle(
-                    color: Colors.blue.shade600,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppConfig.colorD,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
               ),
-              Text(
-                date,
-                style: TextStyle(
-                  color: Colors.green.shade800,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 50),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            dayName,
+                            style: TextStyle(
+                                color: AppConfig.colorA,
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            date,
+                            style: TextStyle(
+                              color: Colors.amber.shade700,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ]
+                      ),
+                    ),
+                ],
               ),
-              const SizedBox(
-                height: 40,
-              ),
-            ]),
+            ),
           ),
           Row(
             children: const [
               Padding(
-                padding: EdgeInsets.only(left: 15),
+                padding: EdgeInsets.fromLTRB(15,0,0,10),
                 child: Text(
                   "Janji temu",
                   style: TextStyle(

@@ -91,15 +91,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(
+        title: const Text("Login"),
+        backgroundColor: AppConfig.colorA,
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "LogIn",
+            "Login",
             style: TextStyle(
-              color: AppConfig.primaryColor,
+              color: AppConfig.colorA,
               fontWeight: FontWeight.bold,
               fontSize: 38
             ),
@@ -112,36 +115,43 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   TextField(
                     controller: _email,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                      filled: true, 
+                      fillColor: AppConfig.colorD,
+                      prefixIcon: const Icon(Icons.email),
                       labelText: "Email",
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _password,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                      filled: true, 
+                      fillColor: AppConfig.colorD,
+                      prefixIcon: const Icon(Icons.lock),
                       labelText: "Password",
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     obscureText: true,
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _login,
-                    child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white,)
-                      : const Text("Login"),
+                  const SizedBox(height: 32),
+                  Components.primaryButton(
+                    text: "Login",
+                    onPressed:_login,
+                    isLoading: _isLoading
                   ),
-                  ElevatedButton(
+                  const SizedBox(height: 10),
+                  Components.secondaryButton(
+                    text: "Register", 
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => const RegisterPage())
                       );
-                    } ,
-                    child: const Text("Register"),
-                  ),
+                    },
+                    isLoading: _isLoading
+                  )
                 ],
               ),
             ),

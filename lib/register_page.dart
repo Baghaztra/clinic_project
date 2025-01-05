@@ -83,16 +83,20 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Register")),
+      appBar: AppBar(
+        title: const Text("Register"),
+        backgroundColor: AppConfig.colorA,
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const SizedBox(height: 16),
             Text(
               "Register",
               style: TextStyle(
-                color: AppConfig.primaryColor,
+                color: AppConfig.colorA,
                 fontWeight: FontWeight.bold,
                 fontSize: 38,
               ),
@@ -107,7 +111,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: _nameController,
                       decoration: const InputDecoration(
-                        labelText: "Name",
+                        prefixIcon: Icon(Icons.person),
+                        labelText: "Nama Lengkap",
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -121,7 +126,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: _emailController,
                       decoration: const InputDecoration(
-                        labelText: "Email",
+                        prefixIcon: Icon(Icons.email),
+                        labelText: "Alamt Email",
                         border: OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.emailAddress,
@@ -139,6 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: _passwordController,
                       decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
                         labelText: "Password",
                         border: OutlineInputBorder(),
                       ),
@@ -156,7 +163,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: _birthDateController,
                       decoration: const InputDecoration(
-                        labelText: "Birth Date (YYYY-MM-DD)",
+                        prefixIcon: Icon(Icons.calendar_month),
+                        labelText: "Tanggal Lahir",
                         border: OutlineInputBorder(),
                       ),
                       readOnly: true,
@@ -176,7 +184,25 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Birth Date tidak boleh kosong';
+                          return 'Tanggal lahir tidak boleh kosong';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _phoneNumberController,
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.phone),
+                        labelText: "Nomor telepon",
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Nomor telepon tidak boleh kosong';
+                        } else if (!RegExp(r'^\d{10,15}$').hasMatch(value)) {
+                          return 'Nomor telepon harus berupa angka 10-15 karakter';
                         }
                         return null;
                       },
@@ -186,9 +212,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       children: [
                         Expanded(
                           child: ListTile(
-                            title: const Text("Male"),
+                            title: const Text("Pria"),
                             leading: Radio<String>(
-                              value: "Male",
+                              value: "male",
                               groupValue: _genderController.text,
                               onChanged: (String? value) {
                                 setState(() {
@@ -200,9 +226,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         Expanded(
                           child: ListTile(
-                            title: const Text("Female"),
+                            title: const Text("Wanita"),
                             leading: Radio<String>(
-                              value: "Female",
+                              value: "female",
                               groupValue: _genderController.text,
                               onChanged: (String? value) {
                                 setState(() {
@@ -214,34 +240,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ],
                     ),
-                    if (_genderController.text.isEmpty)
-                      const Text(
-                        'Gender tidak boleh kosong',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _phoneNumberController,
-                      decoration: const InputDecoration(
-                        labelText: "Phone Number",
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Phone Number tidak boleh kosong';
-                        } else if (!RegExp(r'^\d{10,15}$').hasMatch(value)) {
-                          return 'Phone Number harus berupa angka dan panjangnya 10-15 karakter';
-                        }
-                        return null;
-                      },
-                    ),
                     const SizedBox(height: 32),
-                    ElevatedButton(
+                    Components.primaryButton(
+                      text: "Register", 
                       onPressed: _register,
-                      child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white,)
-                        : const Text("Register"),
+                      isLoading: _isLoading
                     ),
                   ],
                 ),

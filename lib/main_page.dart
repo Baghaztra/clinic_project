@@ -35,37 +35,42 @@ class _MainPageState extends State<MainPage> {
               builder: (BuildContext context)=>const CreateAppointment())
           );
         }),
-        splashColor: Colors.green.shade500,
-        backgroundColor: Colors.green.shade700,
-        child: const Icon(
+        splashColor: AppConfig.colorC,
+        backgroundColor: AppConfig.colorA,
+        child: Icon(
           CupertinoIcons.add,
+          color: AppConfig.colorD,
         ),
       ) : null,
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.green.shade600,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: AppConfig.colorA,
+        unselectedItemColor: AppConfig.colorB,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.house_fill),
+            icon: const Icon(CupertinoIcons.house_fill),
             label: "Home",
+            backgroundColor: AppConfig.colorD,
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.rectangle_stack_person_crop_fill),
+            icon: const Icon(CupertinoIcons.rectangle_stack_person_crop_fill),
             label: "Dokter",
+            backgroundColor: AppConfig.colorD,
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.timer_fill),
+            icon: const Icon(CupertinoIcons.timer_fill),
             label: "Riwayat",
+            backgroundColor: AppConfig.colorD,
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.lab_flask_solid),
+            icon: const Icon(CupertinoIcons.lab_flask_solid),
             label: "Diagnosis",
+            backgroundColor: AppConfig.colorD,
           ),
         ],
       ),
