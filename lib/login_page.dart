@@ -142,15 +142,15 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed:_login,
                     isLoading: _isLoading
                   ),
-                  const SizedBox(height: 10),
-                  Components.secondaryButton(
+                  const SizedBox(height: 20),
+                  const Text("Belum punya akun?", textAlign: TextAlign.center,),
+                  Components.textButton(
                     text: "Register", 
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => const RegisterPage())
                       );
                     },
-                    isLoading: _isLoading
                   )
                 ],
               ),

@@ -57,14 +57,13 @@ class Components {
     required VoidCallback onPressed,
     bool isLoading = false,
   }) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppConfig.colorB,
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+          color: AppConfig.colorA,
+          width: 2,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        // side: BorderSide(
-        //   color: AppConfig.colorA,
-        //   width: 2, 
-        // ),
       ),
       onPressed: isLoading ? null : onPressed,
       child: isLoading
@@ -72,16 +71,46 @@ class Components {
               height: 20,
               width: 20,
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppConfig.colorD),
+                valueColor: AlwaysStoppedAnimation<Color>(AppConfig.colorA),
                 strokeWidth: 2,
               ),
             )
           : Text(
               text,
               style: TextStyle(
-                color: AppConfig.colorD, 
-                fontSize: 18, 
-                fontWeight: FontWeight.bold
+                color: AppConfig.colorA,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+    );
+  }
+  
+  static Widget textButton({
+    required String text,
+    required VoidCallback onPressed,
+    bool isLoading = false,
+  }) {
+    return TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: AppConfig.colorA,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      onPressed: isLoading ? null : onPressed,
+      child: isLoading
+          ? SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppConfig.colorA),
+                strokeWidth: 2,
+              ),
+            )
+          : Text(
+              text,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
     );

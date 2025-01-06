@@ -1,138 +1,169 @@
+import 'package:clinic_project/config.dart';
+import 'package:clinic_project/login_page.dart';
 import 'package:flutter/material.dart';
 
-class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({super.key});
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  final List<Map<String, String>> _onboardingData = [
+    {
+      "image": "./lib/assets/onboarding1.png",
+      "title": "Selamat Datang",
+      "description":
+          "Aplikasi kami membantu Anda mengelola janji temu dengan mudah."
+    },
+    {
+      "image": "./lib/assets/onboarding2.png",
+      "title": "Pantau Kesehatan Anda",
+      "description":
+          "Lihat rekam medis dan kelola informasi kesehatan Anda di satu tempat."
+    },
+    {
+      "image": "./lib/assets/onboarding3.png",
+      "title": "Mulai Sekarang",
+      "description":
+          "Buat akun dan mulai perjalanan kesehatan Anda bersama kami."
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Onboarding Screen",
-              style: TextStyle(fontSize: 24),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/main');
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
               },
-              child: const Text("Lanjutkan ke Aplikasi"),
+              itemCount: _onboardingData.length,
+              itemBuilder: (context, index) {
+                return OnboardingData(
+                  title: _onboardingData[index]["title"]!,
+                  image: _onboardingData[index]["image"]!,
+                  description: _onboardingData[index]["description"]!,
+                );
+              },
             ),
-          ],
-        ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 100,
+                child: (_currentPage != _onboardingData.length - 1)
+                    ? Components.textButton(
+                        text: "Skip",
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        })
+                    : const Text(""),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  _onboardingData.length,
+                  (index) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    height: 8,
+                    width: _currentPage == index ? 16 : 8,
+                    decoration: BoxDecoration(
+                      color: _currentPage == index
+                          ? AppConfig.colorA
+                          : AppConfig.colorB,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 100,
+                child: _currentPage == _onboardingData.length - 1
+                    ? Components.textButton(
+                        text: "Mulai",
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        })
+                    : IconButton(
+                        onPressed: () {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeIn,
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.arrow_forward
+                        )
+                      )
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
 }
 
+class OnboardingData extends StatelessWidget {
+  final String title;
+  final String image;
+  final String description;
 
-// import 'package:concentric_transition/concentric_transition.dart';
-// import 'package:flutter/material.dart';
+  const OnboardingData({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.description,
+  });
 
-// final pages = [
-//   const PageData(
-//     icon: Icons.food_bank_outlined,
-//     title: "Search for your favourite food",
-//     bgColor: Color(0xff3b1791),
-//     textColor: Colors.white,
-//   ),
-//   const PageData(
-//     icon: Icons.shopping_bag_outlined,
-//     title: "Add it to cart",
-//     bgColor: Color(0xfffab800),
-//     textColor: Color(0xff3b1790),
-//   ),
-//   const PageData(
-//     icon: Icons.delivery_dining,
-//     title: "Order and wait",
-//     bgColor: Color(0xffffffff),
-//     textColor: Color(0xff3b1790),
-//   ),
-// ];
-
-// class ConcentricAnimationOnboarding extends StatelessWidget {
-//   const ConcentricAnimationOnboarding({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenWidth = MediaQuery.of(context).size.width;
-//     return Scaffold(
-//       body: ConcentricPageView(
-//         colors: pages.map((p) => p.bgColor).toList(),
-//         radius: screenWidth * 0.1,
-//         nextButtonBuilder: (context) => Padding(
-//           padding: const EdgeInsets.only(left: 3), // visual center
-//           child: Icon(
-//             Icons.navigate_next,
-//             size: screenWidth * 0.08,
-//           ),
-//         ),
-//         // enable itemcount to disable infinite scroll
-//         // itemCount: pages.length,
-//         // opacityFactor: 2.0,
-//         scaleFactor: 2,
-//         // verticalPosition: 0.7,
-//         // direction: Axis.vertical,
-//         // itemCount: pages.length,
-//         // physics: NeverScrollableScrollPhysics(),
-//         itemBuilder: (index) {
-//           final page = pages[index % pages.length];
-//           return SafeArea(
-//             child: _Page(page: page),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-// class PageData {
-//   final String? title;
-//   final IconData? icon;
-//   final Color bgColor;
-//   final Color textColor;
-
-//   const PageData({
-//     this.title,
-//     this.icon,
-//     this.bgColor = Colors.white,
-//     this.textColor = Colors.black,
-//   });
-// }
-
-// class _Page extends StatelessWidget {
-//   final PageData page;
-
-//   const _Page({Key? key, required this.page}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenHeight = MediaQuery.of(context).size.height;
-//     return Column(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         Container(
-//           padding: const EdgeInsets.all(16.0),
-//           margin: const EdgeInsets.all(16.0),
-//           decoration:
-//               BoxDecoration(shape: BoxShape.circle, color: page.textColor),
-//           child: Icon(
-//             page.icon,
-//             size: screenHeight * 0.1,
-//             color: page.bgColor,
-//           ),
-//         ),
-//         Text(
-//           page.title ?? "",
-//           style: TextStyle(
-//               color: page.textColor,
-//               fontSize: screenHeight * 0.035,
-//               fontWeight: FontWeight.bold),
-//           textAlign: TextAlign.center,
-//         ),
-//       ],
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          image,
+          height: 250,
+        ),
+        const SizedBox(height: 24),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Text(
+            description,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ),
+      ],
+    );
+  }
+}

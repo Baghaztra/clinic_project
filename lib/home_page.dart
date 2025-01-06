@@ -17,8 +17,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List appointments = [];
+  bool isLoading = false;
 
   Future<void> getAppointment() async {
+    setState(() {
+      isLoading = true;
+    });
     String appointmentUrl = "${AppConfig.backendUrl}/appointment/latest";
     try {
       var response = await http.get(
@@ -34,13 +38,17 @@ class _HomePageState extends State<HomePage> {
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Erroe: ${response.statusCode}")),
+          SnackBar(content: Text("Error: ${response.statusCode}")),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Error fetching data")),
       );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -53,9 +61,7 @@ class _HomePageState extends State<HomePage> {
           'Authorization': 'Bearer ${AppConfig.token}',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          "status": action
-        }),
+        body: jsonEncode({"status": action}),
       );
 
       if (response.statusCode == 200) {
@@ -143,15 +149,20 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
-          IconButton(
-                icon: const Icon(
-                  Icons.logout,
-                  color: Colors.red,
-                ),
-                onPressed: () {
-                  logout();
-                },
+          InkWell(
+            onTap: isLoading
+                ? null
+                : () async {
+                    await logout();
+                  },
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.logout,
+                color: Colors.red,
               ),
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -177,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 50),
-                      child: Column(
+                    child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -196,9 +207,8 @@ class _HomePageState extends State<HomePage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ]
-                      ),
-                    ),
+                        ]),
+                  ),
                 ],
               ),
             ),
@@ -206,7 +216,7 @@ class _HomePageState extends State<HomePage> {
           Row(
             children: const [
               Padding(
-                padding: EdgeInsets.fromLTRB(15,0,0,10),
+                padding: EdgeInsets.fromLTRB(15, 0, 0, 10),
                 child: Text(
                   "Janji temu",
                   style: TextStyle(
@@ -218,123 +228,172 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: appointments.isEmpty
-                ? const Center(
-                    child: Text(
-                      "No appointments available",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: appointments.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                          color: Colors.green.shade50,
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: ListTile(
-                            title: Text(
-                              AppConfig.role == 'doctor' ?
-                                "${appointments[index]["patient"]}" :
-                                "${appointments[index]["doctor"]}",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.green.shade900,
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.justify,
-                            ),
-                            subtitle: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Text(
-                                    AppConfig.role == 'doctor' ?
-                                      "${appointments[index]["complaints"]}":
-                                      "Doketer ${appointments[index]["specialization"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                        fontSize: 13),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Text(
-                                    appointments[index]["status"],
+          isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: appointments.isEmpty
+                      ? const Center(
+                          child: Text(
+                            "No appointments available",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: appointments.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                                color: Colors.green.shade50,
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: ListTile(
+                                  title: Text(
+                                    AppConfig.role == 'doctor'
+                                        ? "${appointments[index]["patient"]}"
+                                        : "${appointments[index]["doctor"]}",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: appointments[index]["status"] ==
-                                                'canceled'
-                                            ? Colors.red
-                                            : (appointments[index]["status"] ==
-                                                    'confirmed'
-                                                ? Colors.green.shade900
-                                                : Colors.amber.shade800),
-                                        fontSize: 13),
+                                        fontSize: 14,
+                                        color: Colors.green.shade900,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.justify,
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Text(
-                                    DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
-                                        .format(DateTime.parse(
-                                            appointments[index]["appointment_date"]))
-                                        .toString(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                        fontSize: 13),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            trailing: AppConfig.role == 'doctor' 
-                              ? Column(
-                                children: [
-                                  appointments[index]["status"] == 'confirmed'
-                                    ? InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              return CreateMedicalRecords(appointments[index]["id"]);
-                                            }
-                                          )
-                                        );
-                                      },
-                                      child: const Icon(
-                                        Icons.file_present_rounded,
-                                        color: Colors.green,
+                                  subtitle: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      AppConfig.role != 'doctor'
+                                      ? Text(
+                                          "Doketer ${appointments[index]["specialization"]}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.grey.shade900,
+                                              fontSize: 13),
+                                      ) : const SizedBox(),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                            "Keluhan: ${appointments[index]["complaints"]}",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black,
+                                                fontSize: 13),
+                                          ),
                                       ),
-                                    )
-                                    : InkWell(
-                                      onTap: () => action('confirmed',appointments[index]["id"].toString()),
-                                      child: const Icon(
-                                        Icons.check_circle,
-                                        color: Colors.green,
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        child: Text(
+                                          appointments[index]["status"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: appointments[index]
+                                                          ["status"] ==
+                                                      'canceled'
+                                                  ? Colors.red
+                                                  : (appointments[index]
+                                                              ["status"] ==
+                                                          'pending'
+                                                      ? Colors.amber.shade800
+                                                      : (appointments[index]
+                                                                  ["status"] ==
+                                                              "confirmed"
+                                                          ? Colors
+                                                              .green.shade900
+                                                          : Colors.black)),
+                                              fontSize: 13),
+                                        ),
                                       ),
-                                    ),
-                                  const Spacer(),
-                                  InkWell(
-                                    onTap: () => action('canceled',appointments[index]["id"].toString()),
-                                    child: const Icon(
-                                      Icons.remove_circle,
-                                      color: Colors.red,
-                                    )
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10),
+                                        child: Text(
+                                          DateFormat(
+                                                  'EEEE, dd MMMM yyyy', 'id_ID')
+                                              .format(DateTime.parse(
+                                                  appointments[index]
+                                                      ["appointment_date"]))
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black,
+                                              fontSize: 13),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              )
-                              : const Text(''),
-                          ));
-                    },
-                  ),
-          ),
+                                  trailing: AppConfig.role == 'doctor' &&
+                                          appointments[index]["status"] !=
+                                              'completed'
+                                      ? appointments[index]["status"] ==
+                                              'confirmed'
+                                          ? Column(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                      return CreateMedicalRecords(
+                                                          appointments[index]
+                                                              ["id"]);
+                                                    }));
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.file_present_rounded,
+                                                    color: Colors.green,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                InkWell(
+                                                    onTap: () => action(
+                                                        'completed',
+                                                        appointments[index]
+                                                                ["id"]
+                                                            .toString()),
+                                                    child: const Icon(
+                                                      Icons.check_circle,
+                                                      color: Colors.green,
+                                                    )),
+                                              ],
+                                            )
+                                          : Column(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () => action(
+                                                      'confirmed',
+                                                      appointments[index]["id"]
+                                                          .toString()),
+                                                  child: const Icon(
+                                                    Icons.check_circle,
+                                                    color: Colors.green,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                InkWell(
+                                                    onTap: () => action(
+                                                        'canceled',
+                                                        appointments[index]
+                                                                ["id"]
+                                                            .toString()),
+                                                    child: const Icon(
+                                                      Icons.remove_circle,
+                                                      color: Colors.red,
+                                                    )),
+                                              ],
+                                            )
+                                      : const Text(''),
+                                ));
+                          },
+                        ),
+                ),
         ]),
       ),
     );

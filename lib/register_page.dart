@@ -110,10 +110,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.person),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppConfig.colorD,
+                        prefixIcon: const Icon(Icons.person),
                         labelText: "Nama Lengkap",
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -125,10 +127,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.email),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppConfig.colorD,
+                        prefixIcon: const Icon(Icons.email),
                         labelText: "Alamt Email",
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
@@ -144,10 +148,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.lock),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppConfig.colorD,
+                        prefixIcon: const Icon(Icons.lock),
                         labelText: "Password",
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       obscureText: true,
                       validator: (value) {
@@ -162,10 +168,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _birthDateController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.calendar_month),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppConfig.colorD,
+                        prefixIcon: const Icon(Icons.calendar_month),
                         labelText: "Tanggal Lahir",
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       readOnly: true,
                       onTap: () async {
@@ -192,10 +200,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _phoneNumberController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.phone),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppConfig.colorD,
+                        prefixIcon: const Icon(Icons.phone),
                         labelText: "Nomor telepon",
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.phone,
                       validator: (value) {
