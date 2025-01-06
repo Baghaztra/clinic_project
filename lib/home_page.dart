@@ -80,6 +80,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> logout() async {
     const String apiUrl = "${AppConfig.backendUrl}/logout";
 
+    AppConfig.clearAllData();
     try {
       final response = await http.get(
         Uri.parse(apiUrl),

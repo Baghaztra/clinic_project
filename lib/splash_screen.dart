@@ -13,21 +13,42 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool isLogin = false;
+
+  Future<void> getAllData() async {
+    try {
+      AppConfig.token = AppConfig.getData("token").toString();
+      AppConfig.username = AppConfig.getData("name").toString();
+      AppConfig.role = AppConfig.getData("role").toString();
+      if (AppConfig.token != "") {
+        isLogin = true;
+      }
+    } catch (e) {
+      debugPrint("Error fetching data: $e");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    var isLogin = AppConfig.token != null;
-    Timer(
-      const Duration(seconds: 3),
-      () => Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return isLogin ? const MainPage() : const LoginPage();
+    getAllData().then((_) {
+      Timer(
+        const Duration(seconds: 3),
+        () {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return isLogin ? const MainPage() : const LoginPage();
+                }
+              )
+            );
           }
-        )
-      )
-    );
+        }
+      );
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -47,7 +47,11 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        AppConfig.saveToken(data['access_token']);
+        AppConfig.saveData("token", data['access_token']);
+        AppConfig.saveData("name", data['name']);
+        AppConfig.saveData("role", data['role']);
+
+        AppConfig.token = data['access_token'];
         AppConfig.username = data['name'];
         AppConfig.role = data['role'];
 
