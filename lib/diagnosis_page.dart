@@ -14,9 +14,13 @@ class DiagnosisPage extends StatefulWidget {
 
 class _DiagnosisPageState extends State<DiagnosisPage> {
   List diagnosis = [];
+  bool isLoading = false;
   final TextEditingController _search = TextEditingController();
 
   Future<void> fetchHistory() async {
+    setState(() {
+      isLoading = true;
+    });
     String urlAllProduct = "${AppConfig.backendUrl}/medical-records?search=${_search.text.toString()}";
     try {
       var response = await http.get(
@@ -39,7 +43,17 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro $e")),
       );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
+  }
+
+  void onItemTap(int index) {
+    final record = diagnosis[index];
+    Navigator.push(context, MaterialPageRoute(
+        builder: (BuildContext context) => MedicalRecordDetail(medicalRecord: record,)));
   }
 
   @override
@@ -51,111 +65,241 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
-        child: Column(children: [
-          TextField(
+      appBar: AppBar(
+        title: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextField(
             controller: _search,
             decoration: InputDecoration(
-              labelText: "Cari sesuatu",
-              labelStyle: TextStyle(
-                color: Colors.green.shade900,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+              hintText: "Cari sesuatu...",
+              hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+              prefixIcon: Icon(Icons.search, color: Colors.amber.shade900),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 6,
               ),
-              hintText: "Masukkan kata kunci",
-              suffixIcon: Align(
-                widthFactor: 1.0,
-                heightFactor: 1.0,
-                child: IconButton(
-                  onPressed: () {
-                    fetchHistory();
-                  },
-                  icon: const Icon(
-                    Icons.search,
-                    color: Colors.amber,
-                  ),
-                ),
-              ),
-              border: const OutlineInputBorder(
-                  borderSide: BorderSide(width: 3, style: BorderStyle.solid),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
             ),
+            onSubmitted: (value) {
+              fetchHistory();
+            },
           ),
+        ),
+        backgroundColor: AppConfig.colorA,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
+        child: Column(children: [
           Expanded(
-            child: diagnosis.isEmpty
+            child: isLoading
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : ListView.builder(
-                    itemCount: diagnosis.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: ListTile(
-                            title: Text(
-                              DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
-                                .format(DateTime.parse(
-                                    diagnosis[index]["date"]))
-                                .toString(),
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.green.shade900,
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.justify,
-                            ),
-                            subtitle: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5),
-                                  child: Text(
-                                    "Dengan ${diagnosis[index]["doctor"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                        fontSize: 13),
+                : diagnosis.isEmpty
+                    ? const Center(
+                        child: Text("Belum ada reakm medis tersimpan."),
+                      )
+                    : ListView.builder(
+                        itemCount: diagnosis.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () => onItemTap(index),
+                            child: Card(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: ListTile(
+                                  title: Text(
+                                    DateFormat('EEEE, dd MMMM yyyy', 'id_ID')
+                                        .format(DateTime.parse(
+                                            diagnosis[index]["date"]))
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.green.shade900,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.justify,
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Spesialis ${diagnosis[index]["specialization"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                        fontSize: 13),
+                                  subtitle: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 5),
+                                        child: AppConfig.role != 'doctor'
+                                            ? Text(
+                                                "Dengan ${diagnosis[index]["doctor"]} (${diagnosis[index]["specialization"]})",
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Colors.black,
+                                                    fontSize: 13),
+                                              )
+                                            : Text(
+                                                "Dengan ${diagnosis[index]["patient"]}",
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Colors.black,
+                                                    fontSize: 13),
+                                              ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Diagnosis: ${diagnosis[index]["diagnosis"]}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black,
+                                              fontSize: 13),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Pengobatan: ${diagnosis[index]["treatment"]}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black,
+                                              fontSize: 13),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Diagnosis: ${diagnosis[index]["diagnosis"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                        fontSize: 13),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Text(
-                                    "Treatment: ${diagnosis[index]["treatment"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                        fontSize: 13),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ));
-                    },
-                  ),
+                                )),
+                          );
+                        },
+                      ),
           )
         ]),
+      ),
+    );
+  }
+}
+
+class MedicalRecordDetail extends StatelessWidget {
+  final dynamic medicalRecord;
+  const MedicalRecordDetail({Key? key, required this.medicalRecord})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppConfig.colorA,
+        title: const Text(
+          'Detail Rekam Medis',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.person, color: AppConfig.colorA),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Pasien: ',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Text(
+                      medicalRecord['patient'],
+                      style: TextStyle(color: AppConfig.colorA, fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.local_hospital, color: AppConfig.colorA),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Dokter: ',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Text(
+                      medicalRecord['doctor'],
+                      style: TextStyle(color: AppConfig.colorA, fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.medical_services, color: AppConfig.colorA),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Spesialisasi: ',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Text(
+                      medicalRecord['specialization'],
+                      style: TextStyle(color: AppConfig.colorA, fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.calendar_today, color: AppConfig.colorA),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Tanggal: ',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Text(
+                      DateFormat('dd MMMM yyyy', 'id_ID').format(
+                          DateTime.parse(medicalRecord['date'])),
+                      style: TextStyle(color: AppConfig.colorA, fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Diagnosis:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    medicalRecord['diagnosis'],
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Pengobatan:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    medicalRecord['treatment'],
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
