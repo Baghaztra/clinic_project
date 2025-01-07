@@ -311,7 +311,7 @@ class DoctorDetail extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ...doctor["schedule"].map<Widget>((schedule) {
+                        ...doctor["schedule_detail"].map<Widget>((schedule) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Row(

@@ -372,6 +372,23 @@ class AppointmentDetail extends StatelessWidget {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    Icon(Icons.medical_services, color: AppConfig.colorA),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Jadwal dokter: ',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Expanded(
+                      child: Text(
+                        appointment['time'],
+                        style: TextStyle(color: AppConfig.colorA, fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 16),
                 const Text(
                   'Keluhan:',

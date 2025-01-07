@@ -325,6 +325,16 @@ class _HomePageState extends State<HomePage> {
                                               fontSize: 13),
                                         ),
                                       ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 10),
+                                        child: Text(
+                                            "Jadwal dokter: ${appointments[index]["time"]}",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black,
+                                                fontSize: 13),
+                                          ),
+                                      ),
                                     ],
                                   ),
                                   trailing: AppConfig.role == 'doctor' &&
