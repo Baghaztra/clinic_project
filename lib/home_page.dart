@@ -94,8 +94,8 @@ class _HomePageState extends State<HomePage> {
           'Authorization': 'Bearer ${AppConfig.token}',
         },
       );
+      AppConfig.clearAllData();
       if (response.statusCode == 200) {
-        AppConfig.clearAllData();
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => const LoginPage()));
