@@ -95,13 +95,14 @@ class _HomePageState extends State<HomePage> {
         },
       );
       if (response.statusCode == 200) {
+        AppConfig.clearAllData();
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => const LoginPage()));
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Erroe, status: ${response.statusCode}")),
+          SnackBar(content: Text("Error, status: ${response.statusCode}")),
         );
       }
     } catch (e) {

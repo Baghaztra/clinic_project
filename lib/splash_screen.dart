@@ -16,20 +16,15 @@ class _SplashScreenState extends State<SplashScreen> {
   bool isLogin = false;
 
   Future<void> getAllData() async {
-    try {
-      AppConfig.token = AppConfig.getData("token").toString();
-      AppConfig.username = AppConfig.getData("name").toString();
-      AppConfig.role = AppConfig.getData("role").toString();
-      if (AppConfig.token != "") {
-        isLogin = true;
-      }
-    } catch (e) {
-      debugPrint("Error fetching data: $e");
+    await AppConfig.initialize();
+    if (AppConfig.token != "") {
+      isLogin = true;
     }
   }
 
   @override
   void initState() {
+    getAllData();
     super.initState();
     var isLogin = AppConfig.token != null;
     Timer(
