@@ -27,7 +27,7 @@ Aplikasi ini dibuat secara individu dan dirancang untuk membantu pengelolaan lay
 1. Clone repository ini:
 
    ```bash
-   git clone [link repository]
+   git clone https://github.com/Baghaztra/clinic_project.git
    ```
 2. Masuk ke folder proyek:
 
