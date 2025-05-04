@@ -1,16 +1,54 @@
-# clinic_project
+# Clinic Project
 
-A new Flutter project.
+## 📌 Deskripsi
 
-## Getting Started
+**Clinic Project** adalah sebuah aplikasi mobile berbasis **Flutter** yang dikembangkan untuk memenuhi tugas akhir mata kuliah **Pemrograman Mobile Semester 5** di **Politeknik Negeri Padang**.
 
-This project is a starting point for a Flutter application.
+Aplikasi ini dibuat secara individu dan dirancang untuk membantu pengelolaan layanan klinik sederhana, seperti pendaftaran pasien, manajemen data dokter, dan pencatatan riwayat pemeriksaan.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 📦 Teknologi yang Digunakan
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* **Flutter**
+
+---
+
+## 📜 Fitur Utama
+
+* 📄 Pendaftaran pasien baru
+* 📋 Pengantrian online untuk pemeriksaan
+* 🔍 Riwayat
+
+---
+
+## 🛠️ Cara Menjalankan Proyek
+
+1. Clone repository ini:
+
+   ```bash
+   git clone [link repository]
+   ```
+2. Masuk ke folder proyek:
+
+   ```bash
+   cd clinic_project
+   ```
+3. Jalankan dependency Flutter:
+
+   ```bash
+   flutter pub get
+   ```
+4. Jalankan aplikasi di emulator atau device:
+
+   ```bash
+   flutter run
+   ```
+
+---
+
+## 📄 Lisensi
+
+Proyek ini dikembangkan untuk keperluan akademik semester 5 di Politeknik Negeri Padang.
+
+> **Baghaztra Van Ril** (Developer)
